@@ -16,33 +16,14 @@
 </template>
 
 <script>
-  import Vue from 'vue'
-  import Message from 'vue-bulma-message'
-  const MessageComponent = Vue.extend(Message)
-  const openMessage = (propsData = {
-    title: '',
-    message: '',
-    type: '',
-    direction: '',
-    duration: 1500,
-    container: '.messages'
-  }) => {
-    return new MessageComponent({
-      el: document.createElement('div'),
-      propsData
-    })
-  }
   export default {
-    components: {
-      Message
-    },
     data () {
       return this.$store.state.pkg
     },
-    mounted () {
-      openMessage({
+    mounted: function () {
+      this.$message({
         message: 'This goldfish demo is for display purposes only. While it is hooked up to a real vault instance, it should not be considered secure. Head to the Login page to authenticate first!',
-        type: 'success',
+        type: 'warning',
         duration: 0,
         showCloseButton: true
       })
