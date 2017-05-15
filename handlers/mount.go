@@ -5,7 +5,6 @@ import (
 
 	"github.com/caiyeon/goldfish/vault"
 	"github.com/gorilla/csrf"
-	vaultapi "github.com/hashicorp/vault/api"
 	"github.com/labstack/echo"
 )
 
@@ -52,25 +51,6 @@ func GetMount() echo.HandlerFunc {
 
 func ConfigMount() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var auth = &vault.AuthInfo{}
-		defer auth.Clear()
-
-		// fetch auth from cookie
-		getSession(c, auth)
-
-		var config *vaultapi.MountConfigInput
-		if err := c.Bind(&config); err != nil {
-			return logError(c, err.Error(), "Invalid format")
-		}
-
-		// fetch results
-		err := auth.TuneMount(c.Param("mountname"), *config)
-		if err != nil {
-			return logError(c, err.Error(), "Internal error")
-		}
-
-		return c.JSON(http.StatusOK, H{
-			"result": "ok",
-		})
+		return logError(c, "", "Mount tuning not allowed in demo mode")
 	}
 }

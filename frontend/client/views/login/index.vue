@@ -87,9 +87,37 @@
 
               <div class="field">
                 <p class="control">
-                  <button @click="login" type="submit" value="Login" class="button is-primary">
-                    Login
-                  </button>
+                  <p v-if="type === 'Token'" class="control">
+                    <tooltip label="Use 'goldfish' as vault token to login" placement="bottom-right" type="info" size="large" rounded="true" :always="true">
+                      <button type="submit" value="Login" class="button is-primary" @click="login()">
+                        Login
+                      </button>
+                    </tooltip>
+                  </p>
+
+                  <p v-if="type === 'Userpass'" class="control">
+                    <tooltip label="Use username:'goldfish', password:'goldfish'" placement="bottom-right" type="info" size="large" rounded="true" :always="true">
+                      <button type="submit" value="Login" class="button is-primary" @click="login()">
+                        Login
+                      </button>
+                    </tooltip>
+                  </p>
+
+                  <p v-if="type === 'Github'" class="control">
+                    <tooltip label="Github login is disabled on demo mode" placement="bottom-right" type="info" size="large" rounded="true" :always="true">
+                      <button type="submit" value="Login" class="button is-primary" disabled>
+                        Login
+                      </button>
+                    </tooltip>
+                  </p>
+
+                  <p v-if="type === 'LDAP'" class="control">
+                    <tooltip label="LDAP login is disabled on demo mode" placement="bottom-right" type="info" size="large" rounded="true" :always="true">
+                      <button type="submit" value="Login" class="button is-primary" disabled>
+                        Login
+                      </button>
+                    </tooltip>
+                  </p>
                 </p>
               </div>
 
@@ -186,7 +214,13 @@
 </template>
 
 <script>
+import Tooltip from 'vue-bulma-tooltip'
+
 export default {
+  components: {
+    Tooltip
+  },
+
   data () {
     return {
       csrf: '',

@@ -63,20 +63,7 @@ func GetPolicy() echo.HandlerFunc {
 
 func DeletePolicy() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var auth = &vault.AuthInfo{}
-		defer auth.Clear()
-
-		// fetch auth from cookie
-		getSession(c, auth)
-
-		// fetch results
-		if err := auth.DeletePolicy(c.QueryParam("policy")); err != nil {
-			return logError(c, err.Error(), "Internal error")
-		}
-
-		return c.JSON(http.StatusOK, H{
-			"result": "Policy deleted",
-		})
+		return logError(c, "", "Policy deletion not allowed in demo mode")
 	}
 }
 
