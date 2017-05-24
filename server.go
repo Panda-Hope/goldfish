@@ -1,14 +1,14 @@
 package main
 
 import (
-	"flag"
-
 	"github.com/caiyeon/goldfish/handlers"
 	"github.com/caiyeon/goldfish/vault"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/securecookie"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+
+	"golang.org/x/crypto/acme/autocert"
 )
 
 var devMode = vault.DevMode
@@ -16,6 +16,14 @@ var devMode = vault.DevMode
 func main() {
 	e := echo.New()
 
+	// thanks mozilla (for let's encrypt)
+	e.AutoTLSManager.Cache = autocert.DirCache("/var/www/.cache")
+	e.AutoTLSManager.HostPolicy = autocert.HostWhitelist("vault-ui.io")
+
+	// middleware
+	e.Use(middleware.HTTPSRedirectWithConfig(middleware.RedirectConfig{
+		Code: 301,
+	}))
 	// middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -72,14 +80,7 @@ func main() {
 		e.Logger.Fatal(e.Start("127.0.0.1:8000"))
 
 	} else {
-		// if not in dev mode, server must start in HTTPS, and needs cert & key
-		var goldfishAddress, certFile, keyFile string
-		flag.StringVar(&goldfishAddress, "goldfish_addr", "http://127.0.0.1:8000", "Goldfish server's listening address")
-		flag.StringVar(&certFile, "cert_file", "certificate.crt", "Goldfish server's certificate")
-		flag.StringVar(&keyFile, "key_file", "certificate_key.pem", "Goldfish certificate's private key file")
-		flag.Parse()
-
-		// launch server in https
-		e.Logger.Fatal(e.StartTLS(goldfishAddress, certFile, keyFile))
+		// echo will automatically request certificate and use it
+		e.Logger.Fatal(e.StartAutoTLS(":443"))
 	}
 }
